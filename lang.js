@@ -1,4 +1,4 @@
-const re = /(?<channel_open>\>\>)|(?<channel_close>\<\<)|(?<symbol>[~|\^|\\\|_|\/|!|\*|@\-])|(?<number>[0-9]+)/g
+const re = /(?<channel_open>\>\>)|(?<channel_close>\<\<)|(?<symbol>[~|\^|\\\|_|\/|!|\*|@\-])|(?<number>[0-9]+)|(?<space>\s+)/g
 
 function lex(code) {
     const tokens = [];
@@ -25,7 +25,9 @@ function lex(code) {
                 type: 'number',
                 value: groups.number,
             })
-        } else {
+        } else if (groups.space) {
+            continue;
+        }else {
             return null;
         }
     }
@@ -82,7 +84,7 @@ function parseChannel(tokens, index) {
         if (token.value == '/') {
             index++;
             let color = type[1](tokens, index);
-            if (color.error === undefined) {
+            if (color.error !== undefined) {
                 return color;
             }
 
@@ -98,7 +100,7 @@ function parseChannel(tokens, index) {
 }
 
 function parseNumericValue(determiner, tokens, index) {
-    if (tokens[index] !== determiner) {
+    if (tokens[index].value !== determiner) {
         return null;
     }
 
@@ -110,15 +112,15 @@ function parseNumericValue(determiner, tokens, index) {
         };
     }
     index++;
-    if (result.value !== determiner) {
+    if (tokens[index].value !== determiner) {
         return {
             error: 'Unclosed ' + determiner
         };
     }
     return {
-        value: result.value,
+        value: result.value - 0,
         determiner: determiner,
-        index: index,
+        index: index + 1,
     }
 }
 
@@ -141,7 +143,6 @@ function parseSubtractiveSynthColor(tokens, index) {
                     || parseNumericValue('*', tokens, index) 
                     || parseNumericValue('@', tokens, index)
         ;
-
         if (value !== null) {
             if (value.error !== undefined) {
                 return value;
@@ -173,4 +174,4 @@ function parseSubtractiveSynthColor(tokens, index) {
     };
 }
 
-console.log(parse(lex('>>-_^_<<'), 0));
+console.log(parse(lex('>>-/^\\\\___!100!@20@*80*/<<')));
