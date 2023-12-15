@@ -10,6 +10,10 @@ meaning that everything inside >><< is in channel mode
 
 Aplitude is number inside \_\_
 
+Octave is defined inside ''.
+
+Pitch is defined inside xx 
+
 Color of sound is designed in // where first character defines synthesis mode
 
 ### subtractive synth

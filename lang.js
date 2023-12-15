@@ -174,4 +174,4 @@ function parseSubtractiveSynthColor(tokens, index) {
     };
 }
 
-console.log(parse(lex('>>-/^\\\\___!100!@20@*80*/<<')));
+console.log(parse(lex('>>-/^\\\\___!100!@20@*80*/\'10\'x4x<<')));
